@@ -1,0 +1,9 @@
+---
+- name: Upgrade all packages, excluding kernel related packages
+  become: yes
+  become_user: root
+  become_method: sudo
+  yum:
+    name: '*'
+    state: latest
+    exclude: kernel*

@@ -1,0 +1,15 @@
+# General
+**/.DS_Store
+**/.vscode/
+
+# log files
+**/*.log
+
+# Credential
+**/*.pkrvars.hcl
+**/*.pem
+**/*.bak
+
+!prd-bastion.pkrvars.hcl
+!prd-web.pkrvars.hcl
+!prd-was.pkrvars.hcl

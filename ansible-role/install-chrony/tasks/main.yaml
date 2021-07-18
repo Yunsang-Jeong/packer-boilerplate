@@ -1,0 +1,32 @@
+---
+- name: Remove the ntp package.
+  become: yes
+  become_user: root
+  become_method: sudo
+  yum:
+    name: ntp
+    state: absent
+
+- name: Install the chrony package.
+  become: yes
+  become_user: root
+  become_method: sudo
+  yum:
+    name: chrony
+    state: latest
+
+- name: Enable service chrony, and not touch the state
+  become: yes
+  become_user: root
+  become_method: sudo
+  service:
+    name: chronyd
+    enabled: yes
+
+- name: Start service chrony, and not touch the state
+  become: yes
+  become_user: root
+  become_method: sudo
+  service:
+    name: chronyd
+    state: started

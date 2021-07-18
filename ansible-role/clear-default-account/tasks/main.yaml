@@ -1,0 +1,26 @@
+---
+- name: Parsing default account in cloud.cfg
+  become: yes
+  become_user: root
+  become_method: sudo
+  shell: sed -e '/default_user/,/^$/!d' -ne 's/^\( \)\{1,\}name:\(.\{1,\}\)$/\2/p' /etc/cloud/cloud.cfg | tr -d '[:space:]'
+  # do not use shell
+  register: default_account
+
+- name: Remove the default user
+  become: yes
+  become_user: root
+  become_method: sudo
+  user:
+    name: "{{ default_account.stdout }}"
+    state: absent
+    remove: yes
+
+- name: Disable auto-create default account.
+  become: yes
+  become_user: root
+  become_method: sudo
+  replace:
+    path: /etc/cloud/cloud.cfg
+    regexp: "( +)default_user:\\n(\\1 +.+\\n)+"
+    replace: ""

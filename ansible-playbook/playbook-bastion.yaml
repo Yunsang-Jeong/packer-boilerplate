@@ -1,0 +1,7 @@
+---
+- hosts: default
+  name: 'Base ami of this project'
+  roles:
+    - ../ansible-role/update-package-manager
+    - ../ansible-role/install-chrony
+    - ../ansible-role/clear-default-account

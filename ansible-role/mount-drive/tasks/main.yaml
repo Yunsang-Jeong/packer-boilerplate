@@ -1,0 +1,48 @@
+# MOUNT_DIRECTORY
+# DEVICE_NAME
+# USER_NAME
+
+---
+- name: Create the mount directory
+  become: yes
+  become_user: root
+  become_method: sudo
+  ansible.builtin.file:
+    state: directory
+    path: "{{ MOUNT_DIRECTORY }}"
+
+- name: Create a xfs filesystem
+  become: yes
+  become_user: root
+  become_method: sudo
+  community.general.filesystem:
+    fstype: xfs
+    dev: "/dev/{{ DEVICE_NAME }}"
+
+- name: Get UUID
+  become: yes
+  become_user: root
+  become_method: sudo
+  shell: blkid -s UUID -o value /dev/{{ DEVICE_NAME }}
+  register: device_uuid
+
+- name: Mount up device
+  become: yes
+  become_user: root
+  become_method: sudo
+  ansible.posix.mount:
+    path: "{{ MOUNT_DIRECTORY }}"
+    src: "UUID={{ device_uuid.stdout }}"
+    fstype: xfs
+    opts: noatime
+    state: mounted # It'll be described in fstab
+
+- name: Change the directory owner and group
+  become: yes
+  become_user: root
+  become_method: sudo
+  ansible.builtin.file:
+    state: directory
+    path: "{{ MOUNT_DIRECTORY }}"
+    owner: "{{ USER_NAME }}"
+    group: "{{ USER_NAME }}"
